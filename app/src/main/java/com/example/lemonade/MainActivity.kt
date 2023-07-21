@@ -54,36 +54,41 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+data class ScreenImage(val id: Int, val contentDescriptionId: Int)
+data class ScreenInfo(val image: ScreenImage, val messageId: Int)
+
 @Composable
 fun LemonadeApp() {
     var content by remember { mutableStateOf(Screen.TREE) }
     var remainingTouches: Int by remember { mutableStateOf(0) }
+    val screenInfo = when (content) {
+        Screen.TREE -> ScreenInfo(
+            ScreenImage(R.drawable.tree, R.string.tree_description),
+            R.string.tree_message,
+        )
 
-    val imageId = when (content) {
-        Screen.TREE -> R.drawable.tree
-        Screen.SQUEEZE -> R.drawable.squeeze
-        Screen.DRINK -> R.drawable.drink
-        Screen.RESTART -> R.drawable.restart
-    }
-    val descriptionId = when (content) {
-        Screen.TREE -> R.string.tree_description
-        Screen.SQUEEZE -> R.string.squeeze_description
-        Screen.DRINK -> R.string.drink_description
-        Screen.RESTART -> R.string.restart_description
-    }
-    val messageId = when (content) {
-        Screen.TREE -> R.string.tree_message
-        Screen.SQUEEZE -> R.string.squeeze_message
-        Screen.DRINK -> R.string.drink_message
-        Screen.RESTART -> R.string.restart_message
+        Screen.SQUEEZE -> ScreenInfo(
+            ScreenImage(R.drawable.squeeze, R.string.squeeze_description),
+            R.string.squeeze_message,
+        )
+
+        Screen.DRINK -> ScreenInfo(
+            ScreenImage(R.drawable.drink, R.string.drink_description),
+            R.string.drink_message,
+        )
+
+        Screen.RESTART -> ScreenInfo(
+            ScreenImage(R.drawable.restart, R.string.restart_description),
+            R.string.restart_message,
+        )
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTitle()
         ScreenContent(
-            imageId = imageId,
-            imageDescription = stringResource(id = descriptionId),
-            message = stringResource(id = messageId),
+            imageId = screenInfo.image.id,
+            imageDescription = stringResource(screenInfo.image.contentDescriptionId),
+            message = stringResource(screenInfo.messageId),
         ) {
             content = when (content) {
                 Screen.RESTART -> Screen.TREE
